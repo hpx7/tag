@@ -1,0 +1,25 @@
+types:
+  PlayerData:
+    playerName: PlayerName
+  PlayerName: string
+  Board: PlayerInfo[]
+  Point:
+    x: number
+    y: number
+  PlayerInfo:
+    name: PlayerName
+    location: Point
+  PlayerState:
+    board: Board
+    target?: Point
+
+methods:
+  createGame:
+  joinGame:
+  updateTarget:
+    location: Point
+
+userState: PlayerState
+userData: PlayerData
+initialize: createGame
+tick: true

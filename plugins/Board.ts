@@ -19,12 +19,19 @@ export default class CardsComponent extends LitElement {
   }
 
   renderPlayer(player: PlayerInfo) {
+    const color = player.name == this.state.chaser ? "red" : "white";
     return html`<div
       style=${styleMap({
         position: "absolute",
         left: player.location.x + "px",
         top: player.location.y + "px",
-        color: player.name == this.state.chaser ? "red" : "white",
+        border: "1px solid " + color,
+        borderRadius: "50%",
+        width:"20px",
+        height:"20px",
+        transform: "translate(-50%, -50%)",
+        textAlign : "center",
+        color: color,
       })}
     >
       ${player.name}

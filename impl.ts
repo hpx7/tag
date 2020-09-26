@@ -19,7 +19,7 @@ interface InternalState {
   players: InternalPlayerInfo[];
 }
 
-const SPEED = 100;
+const SPEED = 50;
 
 export class Impl implements Methods<InternalState> {
   createGame(userData: PlayerData, request: ICreateGameRequest): InternalState {
@@ -50,10 +50,10 @@ export class Impl implements Methods<InternalState> {
     });
   }
   getUserState(state: InternalState, userData: PlayerData): PlayerState {
-    const player = state.players.find((player) => player.name == userData.playerName)!;
+    const player = state.players.find((player) => player.name == userData.playerName);
     return {
       board: state.players.map(({ name, location }) => ({ name, location })),
-      target: player.target,
+      target: player?.target,
     };
   }
 }

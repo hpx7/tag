@@ -12,6 +12,7 @@ types:
   PlayerState:
     board: Board
     target?: Point
+    chaser: PlayerName
 
 methods:
   createGame:

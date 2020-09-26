@@ -1,10 +1,11 @@
 import { LitElement, css, html, property } from "lit-element";
 import { styleMap } from "lit-html/directives/style-map";
-import { Board, PlayerInfo } from "../.rtag/types";
+import { Board, PlayerInfo, PlayerState } from "../.rtag/types";
 import { RtagClient } from "../.rtag/client";
 
 export default class CardsComponent extends LitElement {
   @property() val!: Board;
+  @property() state!: PlayerState;
   @property() client!: RtagClient;
 
   render() {
@@ -23,6 +24,7 @@ export default class CardsComponent extends LitElement {
         position: "absolute",
         left: player.location.x + "px",
         top: player.location.y + "px",
+        color: player.name == this.state.chaser ? "red" : "white",
       })}
     >
       ${player.name}

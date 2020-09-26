@@ -21,7 +21,7 @@ interface InternalState {
   taggedAt: number;
 }
 
-const SPEED = 20;
+const SPEED = 10;
 const TAG_RADIUS = 10;
 
 export class Impl implements Methods<InternalState> {

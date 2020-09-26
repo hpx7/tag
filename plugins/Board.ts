@@ -10,7 +10,7 @@ export default class CardsComponent extends LitElement {
 
   render() {
     return html`<div
-      style="position: relative; width: 500px; height: 500px;"
+      style="position: relative; width: 500px; height: 500px; border: 1px solid white;"
       @click="${(e: MouseEvent) =>
         this.client.updateTarget({ location: { x: e.offsetX, y: e.offsetY } }, (error) => {})}"
     >
@@ -22,16 +22,17 @@ export default class CardsComponent extends LitElement {
     const color = player.name == this.state.chaser ? "red" : "white";
     return html`<div
       style=${styleMap({
+        pointerEvents: "none",
         position: "absolute",
         left: player.location.x + "px",
         top: player.location.y + "px",
         border: "1px solid " + color,
         borderRadius: "50%",
-        width:"20px",
-        height:"20px",
+        width: "20px",
+        height: "20px",
         transform: "translate(-50%, -50%)",
-        textAlign : "center",
-        color: color,
+        textAlign: "center",
+        color,
       })}
     >
       ${player.name}

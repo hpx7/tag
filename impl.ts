@@ -21,8 +21,8 @@ interface InternalState {
   taggedAt: number;
 }
 
-const SPEED = 10;
-const TAG_RADIUS = 10;
+const SPEED = 15;
+const TAG_RADIUS = 15;
 
 export class Impl implements Methods<InternalState> {
   createGame(userData: PlayerData, request: ICreateGameRequest): InternalState {

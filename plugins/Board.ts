@@ -1,47 +1,59 @@
-import { LitElement, css, html, property } from "lit-element";
-import { styleMap } from "lit-html/directives/style-map";
-import { Board, PlayerInfo, PlayerState } from "../.rtag/types";
+import { Board, Point } from "../.rtag/types";
 import { RtagClient } from "../.rtag/client";
 
-let prevTime = 0;
+export default class CardsComponent extends HTMLElement {
+  client: RtagClient | undefined;
 
-export default class CardsComponent extends LitElement {
-  @property() val!: Board;
-  @property() state!: PlayerState;
-  @property() client!: RtagClient;
+  currPos: Point | undefined;
+  targetPos: Point | undefined;
+  lastUpdate: number | undefined;
 
-  render() {
-    const currTime = Date.now();
-    console.log('render', new Date(), currTime - prevTime);
-    prevTime = currTime;
+  constructor() {
+    super();
 
-    return html`<div
-      style="position: relative; width: 500px; height: 500px; border: 1px solid white;"
-      @click="${(e: MouseEvent) =>
-        this.client.updateTarget({ location: { x: e.offsetX, y: e.offsetY } }, (error) => {})}"
-    >
-      ${this.val.map((player) => this.renderPlayer(player))}
-    </div>`;
+    const canvas = document.createElement("canvas");
+    canvas.width = 500;
+    canvas.height = 500;
+    canvas.style.display = "block";
+    canvas.style.border = "1px solid white";
+    canvas.onclick = (e: MouseEvent) => {
+      this.client?.updateTarget({ location: { x: e.offsetX, y: e.offsetY } }, (error) => {});
+    };
+    this.attachShadow({ mode: "open" }).append(canvas);
+
+    const ctx = canvas.getContext("2d")!;
+    const draw = () => {
+      requestAnimationFrame(draw);
+      if (this.currPos && this.targetPos && this.lastUpdate) {
+        const dx = this.targetPos.x - this.currPos.x;
+        const dy = this.targetPos.y - this.currPos.y;
+
+        const timeSinceLastUpdate = this.lastUpdate - Date.now();
+        const timeUntilNextUpdate = timeSinceLastUpdate + 50;
+
+        const numRendersRemaining = timeUntilNextUpdate / 16.667;
+        if (numRendersRemaining < 1) {
+          this.currPos = this.targetPos;
+        } else {
+          this.currPos.x += dx / numRendersRemaining;
+          this.currPos.y += dy / numRendersRemaining;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        ctx.arc(this.currPos.x, this.currPos.y, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    };
+    draw();
   }
 
-  renderPlayer(player: PlayerInfo) {
-    const color = player.name == this.state.chaser ? "red" : "white";
-    return html`<div
-      style=${styleMap({
-        pointerEvents: "none",
-        position: "absolute",
-        left: player.location.x + "px",
-        top: player.location.y + "px",
-        border: "1px solid " + color,
-        borderRadius: "50%",
-        width: "20px",
-        height: "20px",
-        transform: "translate(-50%, -50%)",
-        textAlign: "center",
-        color,
-      })}
-    >
-      ${player.name}
-    </div>`;
+  set val(val: Board) {
+    this.targetPos = val[0].location;
+    this.lastUpdate = Date.now();
+    if (this.currPos == undefined) {
+      this.currPos = this.targetPos;
+    }
   }
 }

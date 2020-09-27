@@ -3,12 +3,18 @@ import { styleMap } from "lit-html/directives/style-map";
 import { Board, PlayerInfo, PlayerState } from "../.rtag/types";
 import { RtagClient } from "../.rtag/client";
 
+let prevTime = 0;
+
 export default class CardsComponent extends LitElement {
   @property() val!: Board;
   @property() state!: PlayerState;
   @property() client!: RtagClient;
 
   render() {
+    const currTime = Date.now();
+    console.log('render', new Date(), currTime - prevTime);
+    prevTime = currTime;
+
     return html`<div
       style="position: relative; width: 500px; height: 500px; border: 1px solid white;"
       @click="${(e: MouseEvent) =>

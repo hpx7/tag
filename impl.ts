@@ -24,6 +24,8 @@ interface InternalState {
 const SPEED = 10;
 const TAG_RADIUS = 10;
 
+let prevTime = Date.now();
+
 export class Impl implements Methods<InternalState> {
   createGame(userData: PlayerData, request: ICreateGameRequest): InternalState {
     return {
@@ -71,6 +73,12 @@ export class Impl implements Methods<InternalState> {
         }
       }
     }
+
+    const currTime = Date.now();
+    if (currTime - prevTime > 56) {
+      console.log(currTime, currTime - prevTime);
+    }
+    prevTime = currTime;
   }
   getUserState(state: InternalState, userData: PlayerData): PlayerState {
     const player = state.players.find((player) => player.name == userData.playerName);

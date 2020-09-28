@@ -43,13 +43,13 @@ export default class CardsComponent extends HTMLElement {
       if (this.updateBuffer.length == 0) {
         return;
       }
+      console.log(this.updateBuffer.length);
       if (
         currTime - this.updateBuffer[0].receivedAt < SERVER_TICKRATE * BUFFER_SIZE &&
         this.updateBuffer.length < BUFFER_SIZE
       ) {
         return;
       }
-      console.log(this.updateBuffer.length);
       while (this.updateBuffer.length > BUFFER_SIZE) {
         this.updateBuffer.shift();
       }

@@ -36,7 +36,6 @@ export default class CardsComponent extends HTMLElement {
 
     const ctx = canvas.getContext("2d")!;
 
-    let prevTime = Date.now();
     const draw = () => {
       requestAnimationFrame(draw);
 
@@ -50,12 +49,7 @@ export default class CardsComponent extends HTMLElement {
       ) {
         return;
       }
-      if (currTime - prevTime > SERVER_TICKRATE && this.updateBuffer.length > BUFFER_SIZE) {
-        console.log(this.updateBuffer.length, currTime - prevTime);
-      } else {
-        console.log(this.updateBuffer.length);
-      }
-      prevTime = currTime;
+      console.log(this.updateBuffer.length);
       while (this.updateBuffer.length > BUFFER_SIZE) {
         this.updateBuffer.shift();
       }

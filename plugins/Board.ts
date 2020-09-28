@@ -11,32 +11,25 @@ const CLIENT_TICKRATE = 16.67;
 const BUFFER_SIZE = 3;
 
 export default class CardsComponent extends HTMLElement {
+  client: RtagClient | undefined;
   updateBuffer: ServerUpdate[];
   currPos: Point | undefined;
   nextUpdateTime: number | undefined;
 
   constructor() {
     super();
-
     this.attachShadow({ mode: "open" });
     this.updateBuffer = [];
   }
 
-  set val(val: Board) {
-    this.updateBuffer.push({ update: val, receivedAt: Date.now() });
-    if (this.nextUpdateTime == undefined) {
-      this.nextUpdateTime = Date.now() + SERVER_TICKRATE;
-    }
-  }
-
-  set client(client: RtagClient) {
+  connectedCallback() {
     const canvas = document.createElement("canvas");
     canvas.width = 500;
     canvas.height = 500;
     canvas.style.display = "block";
     canvas.style.border = "1px solid white";
     canvas.onclick = (e: MouseEvent) => {
-      client.updateTarget({ location: { x: e.offsetX, y: e.offsetY } }, (error) => {});
+      this.client?.updateTarget({ location: { x: e.offsetX, y: e.offsetY } }, (error) => {});
     };
 
     this.shadowRoot!.append(canvas);
@@ -71,7 +64,7 @@ export default class CardsComponent extends HTMLElement {
 
       const dx = targetPos.x - this.currPos.x;
       const dy = targetPos.y - this.currPos.y;
-      const timeUntilNextUpdate = this.nextUpdateTime - currTime;
+      const timeUntilNextUpdate = this.nextUpdateTime! - currTime;
       const numRendersRemaining = timeUntilNextUpdate / CLIENT_TICKRATE;
       if (numRendersRemaining < 1) {
         this.currPos = targetPos;
@@ -89,5 +82,13 @@ export default class CardsComponent extends HTMLElement {
       ctx.stroke();
     };
     draw();
+  }
+
+  set val(val: Board) {
+    const currTime = Date.now();
+    this.updateBuffer.push({ update: val, receivedAt: currTime });
+    if (this.nextUpdateTime == undefined) {
+      this.nextUpdateTime = currTime + SERVER_TICKRATE;
+    }
   }
 }
